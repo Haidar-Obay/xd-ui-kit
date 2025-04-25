@@ -22,10 +22,11 @@ export const Button = ({
   className = '',
   loadingText,
   ariaLabel,
+  customColors = {},  // New prop for custom colors
   ...props
 }) => {
-  // Variant styles
-  const variantStyles = {
+  // Default variant styles
+  const defaultVariantStyles = {
     primary: 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 active:bg-blue-800',
     secondary: 'bg-gray-200 text-gray-800 hover:bg-gray-300 focus:ring-gray-400 active:bg-gray-400',
     outline: 'bg-transparent border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-400 active:bg-gray-100',
@@ -36,6 +37,12 @@ export const Button = ({
     light: 'bg-white text-gray-800 border border-gray-200 hover:bg-gray-50 focus:ring-gray-300 active:bg-gray-100',
     link: 'bg-transparent text-blue-600 hover:text-blue-800 hover:underline p-0 h-auto focus:ring-blue-500',
     gradient: 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white hover:from-blue-600 hover:to-indigo-700 focus:ring-blue-500',
+  };
+
+  // Merge custom colors with defaults
+  const variantStyles = {
+    ...defaultVariantStyles,
+    ...customColors
   };
 
   // Size styles
