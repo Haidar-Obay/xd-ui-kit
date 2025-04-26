@@ -129,7 +129,7 @@ export const PulseButton = ({ children, ...props }) => {
       {...props}
       className="relative"
     >
-      <span className="absolute inset-0 rounded-md animate-ping bg-blue-400 opacity-30"></span>
+      <span className="absolute inset-0 bg-blue-400 rounded-md animate-ping opacity-30"></span>
       {children}
     </Button>
   );
