@@ -1,4 +1,9 @@
-import './styles/tailwind.css';
+import "./styles/tailwind.css";
 
-export * from './components/Requirements'
-export * from './components/Button';
+export * from "./components/Button";
+export * from "./components/Checkbox";
+export * from "./components/Input";
+export * from "./components/Loader";
+export * from "./components/Select";
+export * from "./components/TextArea";
+export * from "./components/Acordion";
