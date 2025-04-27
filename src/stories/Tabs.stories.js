@@ -2,7 +2,7 @@ import React from "react";
 import {Tabs} from "../components/Tabs"; // ✅ correct import
 
 export default {
-  title: 'App/Tabs',
+  title: 'Components/Tabs',
   component: Tabs,
 };
 

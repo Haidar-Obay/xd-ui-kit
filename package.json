@@ -47,6 +47,7 @@
     "react-dom": "^18.0.0 || ^19.0.0"
   },
   "dependencies": {
-    "lucide-react": "^0.503.0"
+    "lucide-react": "^0.503.0",
+    "recharts": "^2.15.3"
   }
 }

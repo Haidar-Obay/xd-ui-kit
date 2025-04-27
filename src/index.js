@@ -15,6 +15,13 @@ export * from "./components/Loader";
 export * from "./components/Select";
 export * from "./components/TextArea";
 export * from "./components/Acordion";
+export * from "./components/ProgressBar";
+export * from "./components/ConfirmDialogue";
+export * from "./components/ThemeSwitcher";
+export * from "./components/ChartCard";
+export * from "./components/SideBar";
+
+
 export * from "./components/Pagination";
 export * from "./components/Toast";
 export * from "./components/LanguageSwitcher";
