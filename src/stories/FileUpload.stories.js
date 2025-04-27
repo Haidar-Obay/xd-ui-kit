@@ -2,7 +2,7 @@ import React from "react";
 import { FileUploader } from "../components/FileUpload";
 
 export default {
-  title: 'App/FileUploader', // how it shows in Storybook sidebar
+  title: 'Components/FileUploader', // how it shows in Storybook sidebar
   component: FileUploader,
   args: {
     dropzoneText: "Drag & drop your files here or click to upload",
