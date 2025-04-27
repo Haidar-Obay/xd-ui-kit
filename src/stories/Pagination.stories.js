@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import Pagination from '../components/Pagination'; // adjust the path if needed
+import React, { useState } from "react";
+import { Pagination } from "../components/Pagination"; // adjust the path if needed
 
 export default {
-  title: 'Pagination/Pagination',
+  title: "Components/Pagination",
   component: Pagination,
 };
 
@@ -12,7 +12,7 @@ export const Default = () => {
   return (
     <div className="p-6">
       <Pagination
-        totalItems={150}
+        totalItems={1500}
         itemsPerPage={10}
         currentPage={page}
         onPageChange={(newPage) => setPage(newPage)}

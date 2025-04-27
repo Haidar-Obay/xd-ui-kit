@@ -15,3 +15,7 @@ export * from "./components/Loader";
 export * from "./components/Select";
 export * from "./components/TextArea";
 export * from "./components/Acordion";
+export * from "./components/Pagination";
+export * from "./components/Toast";
+export * from "./components/LanguageSwitcher";
+export * from "./components/Table";

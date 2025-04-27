@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-export default function Pagination({
+export const Pagination = ({
   totalItems = 100,
   itemsPerPage = 10,
   currentPage = 1,
@@ -28,7 +28,7 @@ export default function Pagination({
   disableTransitions = false,
   className = "",
   ariaLabel = "Pagination"
-}) {
+}) => {
   // Calculate total pages
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   
@@ -323,4 +323,4 @@ export default function Pagination({
       )}
     </div>
   );
-}
+};
