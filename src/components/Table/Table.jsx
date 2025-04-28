@@ -313,17 +313,17 @@ export const Table = ({
     setEditingCell(null);
   };
 
-  // Handle dragging rows
-  const handleRowDragStart = (e, index) => {
+  // Handle dragging rows - FIXED VERSION
+  const handleRowDragStart = (e, rowId) => {
     if (!features.draggableRows) return;
-    dragItem.current = index;
+    dragItem.current = rowId;
     e.dataTransfer.effectAllowed = "move";
   };
 
-  const handleRowDragOver = (e, index) => {
+  const handleRowDragOver = (e, rowId) => {
     if (!features.draggableRows) return;
     e.preventDefault();
-    dragOverItem.current = index;
+    dragOverItem.current = rowId;
   };
 
   const handleRowDragEnd = () => {
@@ -334,10 +334,22 @@ export const Table = ({
     )
       return;
 
-    const newData = [...filteredData];
-    const itemToMove = newData[dragItem.current];
-    newData.splice(dragItem.current, 1);
-    newData.splice(dragOverItem.current, 0, itemToMove);
+    // Get the actual row objects from the data array
+    const sourceRow = data.find((row) => row.id === dragItem.current);
+    const targetRow = data.find((row) => row.id === dragOverItem.current);
+
+    if (!sourceRow || !targetRow) return;
+
+    // Get source and target indices from the data array
+    const sourceIndex = data.findIndex((row) => row.id === dragItem.current);
+    const targetIndex = data.findIndex(
+      (row) => row.id === dragOverItem.current
+    );
+
+    // Create a new data array with the moved item
+    const newData = [...data];
+    newData.splice(sourceIndex, 1);
+    newData.splice(targetIndex, 0, sourceRow);
 
     setData(newData);
     dragItem.current = null;
@@ -377,7 +389,7 @@ export const Table = ({
 
   // Apply filters, sorting, and global search
   const filteredData = useMemo(() => {
-    let result = [...initialData];
+    let result = [...data]; // Changed from initialData to data to reflect local state
 
     // Apply column filters
     Object.entries(filters).forEach(([columnId, filterValue]) => {
@@ -419,14 +431,7 @@ export const Table = ({
     }
 
     return result;
-  }, [
-    initialData,
-    filters,
-    debouncedSearch,
-    sortConfig,
-    visibleColumns,
-    columns,
-  ]);
+  }, [data, filters, debouncedSearch, sortConfig, visibleColumns, columns]);
 
   // Row height class
   const getRowHeightClass = () => {
@@ -749,7 +754,7 @@ export const Table = ({
           </thead>
 
           <tbody>
-            {filteredData.map((row, rowIndex) => {
+            {filteredData.map((row) => {
               const isExpanded = expandedRows.includes(row.id);
               const isSelected = selectedRows.includes(row.id);
 
@@ -763,14 +768,14 @@ export const Table = ({
                         : "inherit",
                       ":hover": { backgroundColor: styles.rowHoverColor },
                     }}
-                    onClick={() => {
-                      if (onRowClick) onRowClick(row);
-                      if (features.rowExpansion && renderExpandedRow)
-                        toggleRowExpansion(row.id);
-                    }}
+                    // onClick={() => {
+                    //   if (onRowClick) onRowClick(row);
+                    //   if (features.rowExpansion && renderExpandedRow)
+                    //     toggleRowExpansion(row.id);
+                    // }}
                     draggable={features.draggableRows}
-                    onDragStart={(e) => handleRowDragStart(e, rowIndex)}
-                    onDragOver={(e) => handleRowDragOver(e, rowIndex)}
+                    onDragStart={(e) => handleRowDragStart(e, row.id)}
+                    onDragOver={(e) => handleRowDragOver(e, row.id)}
                     onDragEnd={handleRowDragEnd}
                   >
                     {/* Row selection checkbox */}

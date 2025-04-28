@@ -1,6 +1,5 @@
-// Table.stories.jsx
 import React, { useState } from "react";
-import { Table } from "../components/Table"; // adjust path if needed
+import { Table } from "../components/Table"; // Adjust path if needed
 
 export default {
   title: "Components/Table",
@@ -8,49 +7,43 @@ export default {
 };
 
 const Template = (args) => {
-  const [tableData, setTableData] = useState(args.data);
-  const [log, setLog] = useState([]);
+  const [data, setData] = useState(args.data);
 
   const handleCellValueChange = (rowId, columnId, newValue) => {
-    const updatedData = tableData.map((row) =>
-      row.id === rowId ? { ...row, [columnId]: newValue } : row
+    setData((prevData) =>
+      prevData.map((row) =>
+        row.id === rowId ? { ...row, [columnId]: newValue } : row
+      )
     );
-    setTableData(updatedData);
   };
 
-  const handleDataReorder = (newData) => {
-    setLog((prev) => [
-      ...prev,
-      `Reordered at ${new Date().toLocaleTimeString()}`,
-    ]);
-    setTableData(newData);
+  const handleRowClick = (row) => {
+    console.log("Row clicked:", row);
   };
+
+  const renderExpandedRow = (row) => (
+    <div>
+      <p><strong>More Details:</strong> {row.details}</p>
+    </div>
+  );
 
   return (
-    <div style={{ padding: "20px" }}>
-      <Table
-        {...args}
-        data={tableData}
-        onCellValueChange={handleCellValueChange}
-        onDataReorder={handleDataReorder}
-      />
-      <div
-        style={{ marginTop: "20px", padding: "10px", background: "#f5f5f5" }}
-      >
-        <h4>Debug Info:</h4>
-        <div>Drag events: {log.length}</div>
-        <pre>{JSON.stringify(tableData, null, 2)}</pre>
-      </div>
-    </div>
+    <Table
+      {...args}
+      data={data}
+      onCellValueChange={handleCellValueChange}
+      onRowClick={handleRowClick}
+      renderExpandedRow={renderExpandedRow}
+    />
   );
 };
 
 export const Default = Template.bind({});
 Default.args = {
   data: [
-    { id: 1, name: "John Doe", email: "john@example.com", role: "Admin" },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User" },
-    { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Editor" },
+    { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", details: "Manages everything." },
+    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User", details: "Regular user access." },
+    { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Editor", details: "Content editor." },
   ],
   columns: [
     { id: "name", header: "Name" },
@@ -58,16 +51,16 @@ Default.args = {
     { id: "role", header: "Role" },
   ],
   styles: {
-    headerBgColor: "#f0f0f0",
-    rowHoverColor: "#f9f9f9",
-    selectedRowColor: "#d1e7ff",
-    borderColor: "#d1d5db",
-    textColor: "#111827",
-    headerTextColor: "#1f2937",
+    headerBgColor: "#f9fafb",
+    rowHoverColor: "#f3f4f6",
+    selectedRowColor: "#eff6ff",
+    borderColor: "#e5e7eb",
+    textColor: "#374151",
+    headerTextColor: "#111827",
     showRowBorders: true,
     showColumnBorders: true,
     stickyHeader: true,
-    stickyFirstColumn: false,
+    stickyFirstColumn: true,
     rowHeight: "default",
   },
   features: {
@@ -79,15 +72,6 @@ Default.args = {
     saveState: true,
     liveSearch: true,
   },
-  renderExpandedRow: (row) => (
-    <div>
-      <p>
-        <strong>More about:</strong> {row.name}
-      </p>
-      <p>Email: {row.email}</p>
-      <p>Role: {row.role}</p>
-    </div>
-  ),
-  stateId: "storybook-table-state",
+  stateId: "storybook-table-example",
   searchDebounceTime: 300,
 };
