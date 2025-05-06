@@ -17,13 +17,27 @@ const Template = (args) => {
     );
   };
 
-  const handleRowClick = (row) => {
-    console.log("Row clicked:", row);
+  const handleRowClick = (row, action) => {
+    if (action === "edit") {
+      console.log("Edit clicked:", row);
+    } else if (action === "delete") {
+      const confirmed = window.confirm(
+        `Are you sure you want to delete ${row.name}?`
+      );
+      if (confirmed) {
+        console.log("Confirmed delete:", row);
+        setData((prev) => prev.filter((r) => r.id !== row.id));
+      }
+    } else {
+      console.log("Row clicked:", row);
+    }
   };
 
   const renderExpandedRow = (row) => (
     <div>
-      <p><strong>More Details:</strong> {row.details}</p>
+      <p>
+        <strong>More Details:</strong> {row.details}
+      </p>
     </div>
   );
 
@@ -41,9 +55,27 @@ const Template = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   data: [
-    { id: 1, name: "John Doe", email: "john@example.com", role: "Admin", details: "Manages everything." },
-    { id: 2, name: "Jane Smith", email: "jane@example.com", role: "User", details: "Regular user access." },
-    { id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Editor", details: "Content editor." },
+    {
+      id: 1,
+      name: "John Doe",
+      email: "john@example.com",
+      role: "Admin",
+      details: "Manages everything.",
+    },
+    {
+      id: 2,
+      name: "Jane Smith",
+      email: "jane@example.com",
+      role: "User",
+      details: "Regular user access.",
+    },
+    {
+      id: 3,
+      name: "Bob Johnson",
+      email: "bob@example.com",
+      role: "Editor",
+      details: "Content editor.",
+    },
   ],
   columns: [
     { id: "name", header: "Name" },

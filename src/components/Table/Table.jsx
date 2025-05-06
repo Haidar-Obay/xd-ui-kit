@@ -469,43 +469,43 @@ export const Table = ({
   };
 
   // Empty state
-  if (filteredData.length === 0) {
-    return (
-      <div
-        className="w-full border rounded p-8"
-        style={{ borderColor: styles.borderColor }}
-      >
-        <div className="flex flex-col items-center justify-center">
-          <div className="bg-gray-100 p-6 rounded-full mb-4">
-            <Filter size={32} className="text-gray-400" />
-          </div>
-          <h3
-            className="text-lg font-medium mb-2"
-            style={{ color: styles.headerTextColor }}
-          >
-            No data found
-          </h3>
-          <p className="text-gray-500 text-center mb-4">
-            {debouncedSearch || Object.values(filters).some(Boolean)
-              ? "Your search or filter criteria didn't match any records. Try adjusting your filters."
-              : "There are no records to display yet."}
-          </p>
-          {(debouncedSearch || Object.values(filters).some(Boolean)) && (
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-              onClick={() => {
-                setGlobalSearch("");
-                setDebouncedSearch("");
-                setFilters({});
-              }}
-            >
-              Clear all filters
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
+  // if (filteredData.length === 0) {
+  //   return (
+  //     <div
+  //       className="w-full border rounded p-8"
+  //       style={{ borderColor: styles.borderColor }}
+  //     >
+  //       <div className="flex flex-col items-center justify-center">
+  //         <div className="bg-gray-100 p-6 rounded-full mb-4">
+  //           <Filter size={32} className="text-gray-400" />
+  //         </div>
+  //         <h3
+  //           className="text-lg font-medium mb-2"
+  //           style={{ color: styles.headerTextColor }}
+  //         >
+  //           No data found
+  //         </h3>
+  //         <p className="text-gray-500 text-center mb-4">
+  //           {debouncedSearch || Object.values(filters).some(Boolean)
+  //             ? "Your search or filter criteria didn't match any records. Try adjusting your filters."
+  //             : "There are no records to display yet."}
+  //         </p>
+  //         {(debouncedSearch || Object.values(filters).some(Boolean)) && (
+  //           <button
+  //             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+  //             onClick={() => {
+  //               setGlobalSearch("");
+  //               setDebouncedSearch("");
+  //               setFilters({});
+  //             }}
+  //           >
+  //             Clear all filters
+  //           </button>
+  //         )}
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div
@@ -750,144 +750,186 @@ export const Table = ({
                     </th>
                   );
                 })}
+              <th className="p-3 text-left" style={getBorderStyle()}>
+                Actions
+              </th>
             </tr>
           </thead>
 
           <tbody>
-            {filteredData.map((row) => {
-              const isExpanded = expandedRows.includes(row.id);
-              const isSelected = selectedRows.includes(row.id);
+            {filteredData.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={
+                    visibleColumns.length +
+                    (features.multiSelect ? 1 : 0) +
+                    (features.rowExpansion && renderExpandedRow ? 1 : 0) +
+                    1 // for actions column
+                  }
+                  className="text-center py-4 text-gray-500"
+                >
+                  No matching records found.
+                </td>
+              </tr>
+            ) : (
+              filteredData.map((row) => {
+                const isExpanded = expandedRows.includes(row.id);
+                const isSelected = selectedRows.includes(row.id);
 
-              return (
-                <React.Fragment key={row.id}>
-                  <tr
-                    className={`hover:bg-gray-50`}
-                    style={{
-                      backgroundColor: isSelected
-                        ? styles.selectedRowColor
-                        : "inherit",
-                      ":hover": { backgroundColor: styles.rowHoverColor },
-                    }}
-                    // onClick={() => {
-                    //   if (onRowClick) onRowClick(row);
-                    //   if (features.rowExpansion && renderExpandedRow)
-                    //     toggleRowExpansion(row.id);
-                    // }}
-                    draggable={features.draggableRows}
-                    onDragStart={(e) => handleRowDragStart(e, row.id)}
-                    onDragOver={(e) => handleRowDragOver(e, row.id)}
-                    onDragEnd={handleRowDragEnd}
-                  >
-                    {/* Row selection checkbox */}
-                    {features.multiSelect && (
-                      <td
-                        className={`${getRowHeightClass()} p-3 first-col`}
-                        style={getBorderStyle()}
-                      >
-                        <button onClick={(e) => toggleRowSelection(e, row.id)}>
-                          {isSelected ? (
-                            <CheckSquare size={18} className="text-blue-500" />
-                          ) : (
-                            <Square size={18} className="text-gray-400" />
-                          )}
-                        </button>
-                      </td>
-                    )}
-
-                    {/* Expansion control */}
-                    {features.rowExpansion && renderExpandedRow && (
-                      <td
-                        className={`${getRowHeightClass()} w-10 p-3`}
-                        style={getBorderStyle()}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleRowExpansion(row.id);
-                        }}
-                      >
-                        {isExpanded ? (
-                          <ChevronDown size={18} className="text-gray-500" />
-                        ) : (
-                          <ChevronRight size={18} className="text-gray-500" />
-                        )}
-                      </td>
-                    )}
-
-                    {/* Data cells */}
-                    {columnOrder
-                      .filter((columnId) => visibleColumns.includes(columnId))
-                      .map((columnId, index) => {
-                        const isEditing =
-                          editingCell &&
-                          editingCell.rowId === row.id &&
-                          editingCell.columnId === columnId;
-
-                        return (
-                          <td
-                            key={`${row.id}-${columnId}`}
-                            className={`${getRowHeightClass()} p-3 ${
-                              index === 0 &&
-                              !features.multiSelect &&
-                              !features.rowExpansion
-                                ? "first-col"
-                                : ""
-                            }`}
-                            style={getBorderStyle()}
-                            onDoubleClick={() =>
-                              handleCellDoubleClick(
-                                row.id,
-                                columnId,
-                                row[columnId]
-                              )
-                            }
+                return (
+                  <React.Fragment key={row.id}>
+                    <tr
+                      className={`hover:bg-gray-50`}
+                      style={{
+                        backgroundColor: isSelected
+                          ? styles.selectedRowColor
+                          : "inherit",
+                        ":hover": { backgroundColor: styles.rowHoverColor },
+                      }}
+                      draggable={features.draggableRows}
+                      onDragStart={(e) => handleRowDragStart(e, row.id)}
+                      onDragOver={(e) => handleRowDragOver(e, row.id)}
+                      onDragEnd={handleRowDragEnd}
+                    >
+                      {/* Row selection checkbox */}
+                      {features.multiSelect && (
+                        <td
+                          className={`${getRowHeightClass()} p-3 first-col`}
+                          style={getBorderStyle()}
+                        >
+                          <button
+                            onClick={(e) => toggleRowSelection(e, row.id)}
                           >
-                            {isEditing ? (
-                              <input
-                                type="text"
-                                className="w-full p-1 border rounded"
-                                style={{ borderColor: styles.borderColor }}
-                                defaultValue={editingCell.value}
-                                ref={editCellInputRef}
-                                onBlur={handleCellEditComplete}
-                                onKeyDown={(e) => {
-                                  if (e.key === "Enter") {
-                                    handleCellEditComplete(e);
-                                  } else if (e.key === "Escape") {
-                                    setEditingCell(null);
-                                  }
-                                }}
+                            {isSelected ? (
+                              <CheckSquare
+                                size={18}
+                                className="text-blue-500"
                               />
                             ) : (
-                              renderCellValue(row, columnId)
+                              <Square size={18} className="text-gray-400" />
                             )}
-                          </td>
-                        );
-                      })}
-                  </tr>
+                          </button>
+                        </td>
+                      )}
 
-                  {/* Expanded row content */}
-                  {isExpanded && features.rowExpansion && renderExpandedRow && (
-                    <tr>
+                      {/* Expansion control */}
+                      {features.rowExpansion && renderExpandedRow && (
+                        <td
+                          className={`${getRowHeightClass()} w-10 p-3`}
+                          style={getBorderStyle()}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleRowExpansion(row.id);
+                          }}
+                        >
+                          {isExpanded ? (
+                            <ChevronDown size={18} className="text-gray-500" />
+                          ) : (
+                            <ChevronRight size={18} className="text-gray-500" />
+                          )}
+                        </td>
+                      )}
+
+                      {/* Data cells */}
+                      {columnOrder
+                        .filter((columnId) => visibleColumns.includes(columnId))
+                        .map((columnId, index) => {
+                          const isEditing =
+                            editingCell &&
+                            editingCell.rowId === row.id &&
+                            editingCell.columnId === columnId;
+
+                          return (
+                            <td
+                              key={`${row.id}-${columnId}`}
+                              className={`${getRowHeightClass()} p-3 ${
+                                index === 0 &&
+                                !features.multiSelect &&
+                                !features.rowExpansion
+                                  ? "first-col"
+                                  : ""
+                              }`}
+                              style={getBorderStyle()}
+                              onDoubleClick={() =>
+                                handleCellDoubleClick(
+                                  row.id,
+                                  columnId,
+                                  row[columnId]
+                                )
+                              }
+                            >
+                              {isEditing ? (
+                                <input
+                                  type="text"
+                                  className="w-full p-1 border rounded"
+                                  style={{ borderColor: styles.borderColor }}
+                                  defaultValue={editingCell.value}
+                                  ref={editCellInputRef}
+                                  onBlur={handleCellEditComplete}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      handleCellEditComplete(e);
+                                    } else if (e.key === "Escape") {
+                                      setEditingCell(null);
+                                    }
+                                  }}
+                                />
+                              ) : (
+                                renderCellValue(row, columnId)
+                              )}
+                            </td>
+                          );
+                        })}
+
                       <td
-                        colSpan={
-                          visibleColumns.length +
-                          (features.multiSelect ? 1 : 0) +
-                          1
-                        }
-                        className="p-0"
+                        className={`${getRowHeightClass()} p-3`}
                         style={getBorderStyle()}
                       >
-                        <div
-                          className="p-4 bg-gray-50"
-                          style={{ borderColor: styles.borderColor }}
-                        >
-                          {renderExpandedRow(row)}
+                        <div className="flex space-x-2">
+                          <button
+                            className="text-blue-600 hover:underline"
+                            onClick={() => onRowClick?.(row, "edit")}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="text-red-600 hover:underline"
+                            onClick={() => onRowClick?.(row, "delete")}
+                          >
+                            Delete
+                          </button>
                         </div>
                       </td>
                     </tr>
-                  )}
-                </React.Fragment>
-              );
-            })}
+
+                    {/* Expanded row content */}
+                    {isExpanded &&
+                      features.rowExpansion &&
+                      renderExpandedRow && (
+                        <tr>
+                          <td
+                            colSpan={
+                              visibleColumns.length +
+                              (features.multiSelect ? 1 : 0) +
+                              1 +
+                              1
+                            }
+                            className="p-0"
+                            style={getBorderStyle()}
+                          >
+                            <div
+                              className="p-4 bg-gray-50"
+                              style={{ borderColor: styles.borderColor }}
+                            >
+                              {renderExpandedRow(row)}
+                            </div>
+                          </td>
+                        </tr>
+                      )}
+                  </React.Fragment>
+                );
+              })
+            )}
           </tbody>
         </table>
       </div>
