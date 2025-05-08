@@ -14,7 +14,7 @@ export * from "./components/Input";
 export * from "./components/Loader";
 export * from "./components/Select";
 export * from "./components/TextArea";
-export * from "./components/Acordion";
+export * from "./components/Accordion";
 export * from "./components/ProgressBar";
 export * from "./components/ConfirmDialogue";
 export * from "./components/ThemeSwitcher";
